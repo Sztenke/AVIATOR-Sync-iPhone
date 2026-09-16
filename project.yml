@@ -1,0 +1,32 @@
+name: AviatorSync
+options:
+  bundleIdPrefix: com.aviator
+settings:
+  base:
+    SWIFT_VERSION: 5.0
+    IPHONEOS_DEPLOYMENT_TARGET: 17.0
+targets:
+  AviatorSync:
+    type: application
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - Sources/AviatorSync
+    info:
+      path: Sources/AviatorSync/Info.plist
+      properties:
+        CFBundleDisplayName: AVIATOR Sync
+        CFBundleShortVersionString: "4.4"
+        CFBundleVersion: "1"
+        UILaunchScreen: {}
+        NSBluetoothAlwaysUsageDescription: "Az AVIATOR Sync Bluetooth-kapcsolaton keresztül kommunikál az AVIATOR F-Series Mark 1 órával."
+        NSBluetoothPeripheralUsageDescription: "Az AVIATOR Sync Bluetooth-kapcsolaton keresztül kommunikál az AVIATOR F-Series Mark 1 órával."
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIRequiresFullScreen: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.aviator.sync.iphone
+        PRODUCT_NAME: AVIATOR Sync
+        TARGETED_DEVICE_FAMILY: "1"
+        CODE_SIGN_STYLE: Automatic
