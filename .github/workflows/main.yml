@@ -24,19 +24,31 @@ jobs:
             -project AviatorSync.xcodeproj \
             -scheme AviatorSync \
             -configuration Release \
-            -sdk iphoneos \
             -destination 'generic/platform=iOS' \
             -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
             build
 
-      - name: Create unsigned IPA
+      - name: Create and verify IPA
         run: |
-          mkdir -p Payload
-          cp -R "build/Build/Products/Release-iphoneos/AVIATOR Sync.app" Payload/
-          zip -r AVIATOR-Sync-iPhone-v4.4-unsigned.ipa Payload
+          APP_PATH=$(find build/Build/Products/Release-iphoneos -maxdepth 1 -name "*.app" -type d | head -1)
+
+          echo "App found at: $APP_PATH"
+          test -n "$APP_PATH"
+
+          rm -rf Payload
+          mkdir Payload
+          cp -R "$APP_PATH" Payload/
+
+          /usr/bin/zip -qry AVIATOR-Sync-iPhone-v4.4-unsigned.ipa Payload
+
+          echo "Checking IPA:"
+          unzip -l AVIATOR-Sync-iPhone-v4.4-unsigned.ipa | head -30
+
+          unzip -t AVIATOR-Sync-iPhone-v4.4-unsigned.ipa
 
       - name: Upload IPA
         uses: actions/upload-artifact@v4
