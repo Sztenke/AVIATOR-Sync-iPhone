@@ -1,0 +1,44 @@
+name: Build AVIATOR Sync iPhone
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-14
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      - name: Build iPhone app
+        run: |
+          xcodebuild \
+            -project AviatorSync.xcodeproj \
+            -scheme AviatorSync \
+            -sdk iphoneos \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            build
+
+      - name: Create IPA
+        run: |
+          mkdir -p Payload
+          cp -R "build/Build/Products/Release-iphoneos/AviatorSync.app" Payload/
+          zip -r AVIATOR-Sync-iPhone-v4.4-unsigned.ipa Payload
+
+      - name: Upload iPhone application
+        uses: actions/upload-artifact@v4
+        with:
+          name: AVIATOR-Sync-iPhone-v4.4-unsigned
+          path: AVIATOR-Sync-iPhone-v4.4-unsigned.ipa
+          if-no-files-found: error
